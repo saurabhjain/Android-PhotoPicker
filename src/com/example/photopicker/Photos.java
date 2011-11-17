@@ -80,8 +80,8 @@ public class Photos extends Activity{
 				cursor.moveToPosition(position);
 				int imageID = cursor.getInt(columnIndex);
 				imageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, "" + imageID));
-				imageView.setLayoutParams(new GridView.LayoutParams(100, 100));
-				imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+				imageView.setLayoutParams(new GridView.LayoutParams(120, 120));
+				imageView.setScaleType(ImageView.ScaleType.CENTER);
 				imageView.setPadding(8, 8, 8, 8);
 			} else {
 				imageView = (ImageView) convertView;
