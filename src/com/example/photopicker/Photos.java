@@ -2,6 +2,7 @@ package com.example.photopicker;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ public class Photos extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.photos);
 		
+		//final Intent intent = new Intent(); Intent for receiving result
+		
 		String [] projection = {MediaStore.Images.Thumbnails._ID};
 		cursor = managedQuery(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, projection, null, null, MediaStore.Images.Thumbnails.IMAGE_ID);
 		columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
@@ -44,6 +47,8 @@ public class Photos extends Activity{
 				
 				String imagePath = cursor.getString(columnIndex);
 				Toast.makeText(Photos.this, "" + position, Toast.LENGTH_SHORT).show();
+				//setResult(position, intent); setting result
+				//finish(); finsh activity after selection
 			}
 		});
 	}
