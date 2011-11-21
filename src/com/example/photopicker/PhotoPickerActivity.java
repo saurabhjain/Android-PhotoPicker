@@ -13,6 +13,8 @@ public class PhotoPickerActivity extends Activity {
 	private Button mPickPhotos;
 	final Context context = this;
 	int requestCode;
+	String ifilename;
+	long idataId;
 
 	/** Called when the activity is first created. */
     @Override
@@ -33,6 +35,8 @@ public class PhotoPickerActivity extends Activity {
     
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-    	Toast.makeText(this, "Result came"+ resultCode, Toast.LENGTH_SHORT).show();
+    	ifilename = data.getStringExtra("filename");
+    	idataId = data.getLongExtra("dataUid", 0);
+    	Toast.makeText(this, "Result Code, Filename, imageId:"+ resultCode + ", " + ifilename + ", " + idataId, Toast.LENGTH_LONG).show();
     }
 }

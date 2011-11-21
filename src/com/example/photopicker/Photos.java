@@ -26,7 +26,6 @@ public class Photos extends Activity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.photos);
-		//final Intent rIntent = new Intent(); //Intent for receiving result
 		initGridView();
 		
 	}
@@ -61,14 +60,16 @@ public class Photos extends Activity{
 				actualImageCursor.moveToPosition(position);
 				final String filename = actualImageCursor.getString(dataColumnIndex);
 				final long imageId = actualImageCursor.getLong(idColumnIndex);
+				//final int imageId = actualImageCursor.getInt(idColumnIndex);
+				Toast.makeText(Photos.this, "" + imageId, Toast.LENGTH_SHORT).show();
 				//final Intent intent = new Intent(Photos.this, New.class);
-				//intent.putExtra("filename", filename);
-				//intent.putExtra("dataUid", imageId);
+				final Intent intent = new Intent();
+				intent.putExtra("filename", filename);
+				intent.putExtra("dataUid", imageId);
 				actualImageCursor.close();
+				setResult(RESULT_OK, intent); //setting result
+				finish(); //finIsh activity after selection
 				//startActivity(intent);
-				Toast.makeText(Photos.this, "" + position, Toast.LENGTH_SHORT).show();
-				setResult(position, getIntent()); //setting result
-				//finish(); //finIsh activity after selection
 			}
 		});
 		
