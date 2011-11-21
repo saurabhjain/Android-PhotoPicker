@@ -30,6 +30,21 @@ public class Photos extends Activity{
 		setContentView(R.layout.photos);
 		initGridView();
 		
+		
+		attachPhotos = (Button)findViewById(R.id.attach);
+
+		attachPhotos.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Toast.makeText(Photos.this, "attach button clicked", Toast.LENGTH_SHORT).show();
+					final Intent intent = new Intent();
+					//intent.putExtra("filename", filename);
+					//intent.putExtra("dataUid", imageId);
+					setResult(RESULT_OK, intent); //setting result
+					finish(); //finIsh activity after selection
+				}
+			});
+		
 	}
 	
 	private void initGridView() {
