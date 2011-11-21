@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,53 +19,73 @@ import android.widget.Toast;
 
 public class Photos extends Activity{
 	
-	public Cursor cursor;
-	public int columnIndex;
+	private int count;
+	private Bitmap[] imageBitmap;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.photos);
+		//final Intent rIntent = new Intent(); //Intent for receiving result
+		initGridView();
 		
-		//final Intent intent = new Intent(); Intent for receiving result
-		
-		String [] projection = {MediaStore.Images.Thumbnails._ID};
-		cursor = managedQuery(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, projection, null, null, MediaStore.Images.Thumbnails.IMAGE_ID);
-		columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
-		
-		GridView gridview = (GridView)findViewById(R.id.gridView);
-		gridview.setAdapter(new ImageAdapter(this));
-		
-		gridview.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int position,
-					long id) {
-				String [] projection = {MediaStore.Images.Media.DATA};
-				cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-				columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
-				cursor.moveToPosition(position);
-				
-				String imagePath = cursor.getString(columnIndex);
-				Toast.makeText(Photos.this, "" + position, Toast.LENGTH_SHORT).show();
-				//setResult(position, intent); setting result
-				//finish(); finsh activity after selection
-			}
-		});
 	}
 	
-	private class ImageAdapter extends BaseAdapter {
-
-		private Context context;
+	private void initGridView() {
 		
-		public ImageAdapter (Context localContext) {
-			context = localContext;
+		final String[] columns = {MediaStore.Images.Media._ID};
+		final String sortBy = MediaStore.Images.Media._ID;
+		Cursor cursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, sortBy);
+		int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+		this.count = cursor.getCount();
+		this.imageBitmap = new Bitmap[this.count];
+		for(int i=0; i<this.count; i++) {
+			
+			cursor.moveToPosition(i);
+			int id = cursor.getInt(columnIndex);
+			imageBitmap[i] = MediaStore.Images.Thumbnails.getThumbnail(getApplicationContext().getContentResolver(), id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
 		}
 		
+		GridView gridView = (GridView) findViewById(R.id.gridView);
+		gridView.setAdapter(new ImageAdapter(getApplicationContext()));
+		gridView.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(@SuppressWarnings("rawtypes") AdapterView parent, View v, int position,
+					long id) {
+				
+				String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
+				Cursor actualImageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, null);
+				final int dataColumnIndex = actualImageCursor.getColumnIndex(MediaStore.Images.Media.DATA);
+				final int idColumnIndex = actualImageCursor.getColumnIndex(MediaStore.Images.Media._ID);
+				actualImageCursor.moveToPosition(position);
+				final String filename = actualImageCursor.getString(dataColumnIndex);
+				final long imageId = actualImageCursor.getLong(idColumnIndex);
+				//final Intent intent = new Intent(Photos.this, New.class);
+				//intent.putExtra("filename", filename);
+				//intent.putExtra("dataUid", imageId);
+				actualImageCursor.close();
+				//startActivity(intent);
+				Toast.makeText(Photos.this, "" + position, Toast.LENGTH_SHORT).show();
+				setResult(position, getIntent()); //setting result
+				//finish(); //finIsh activity after selection
+			}
+		});
+		
+		cursor.close();
+	}
+
+	private class ImageAdapter extends BaseAdapter {
+
+		private Context localContext;
+		
+		public ImageAdapter(Context c) {
+			localContext = c;
+		}
+
 		@Override
 		public int getCount() {
-			//return mThumbIds.length;
-			return cursor.getCount();
+			return count;
 		}
 
 		@Override
@@ -79,19 +100,16 @@ public class Photos extends Activity{
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			ImageView imageView;
-			if(convertView == null) {
-				imageView = new ImageView(context);
-				cursor.moveToPosition(position);
-				int imageID = cursor.getInt(columnIndex);
-				imageView.setImageURI(Uri.withAppendedPath(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, "" + imageID));
-				imageView.setLayoutParams(new GridView.LayoutParams(120, 120));
-				imageView.setScaleType(ImageView.ScaleType.CENTER);
-				imageView.setPadding(8, 8, 8, 8);
+
+			ImageView iView = (ImageView)convertView;
+			if(iView!=null) {
+				iView.setImageBitmap(imageBitmap[position]);
 			} else {
-				imageView = (ImageView) convertView;
+				iView = new ImageView (localContext.getApplicationContext());
+				iView.setImageBitmap(imageBitmap[position]);
+				iView.setLayoutParams(new GridView.LayoutParams(92, 92));
 			}
-			return imageView;
+			return iView;
 		}
 	}
 }
