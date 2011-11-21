@@ -107,7 +107,7 @@ public class Photos extends Activity{
 			} else {
 				iView = new ImageView (localContext.getApplicationContext());
 				iView.setImageBitmap(imageBitmap[position]);
-				iView.setLayoutParams(new GridView.LayoutParams(92, 92));
+				iView.setLayoutParams(new GridView.LayoutParams(120, 120));
 			}
 			return iView;
 		}
