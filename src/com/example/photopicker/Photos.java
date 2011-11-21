@@ -29,8 +29,7 @@ public class Photos extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.photos);
 		initGridView();
-		
-		
+
 		attachPhotos = (Button)findViewById(R.id.attach);
 
 		attachPhotos.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +43,6 @@ public class Photos extends Activity{
 					finish(); //finIsh activity after selection
 				}
 			});
-		
 	}
 	
 	private void initGridView() {
