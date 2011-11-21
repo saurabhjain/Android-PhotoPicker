@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class Photos extends Activity{
 	
+	private Button attachPhotos;
 	private int count;
 	private Bitmap[] imageBitmap;
 	
@@ -60,16 +62,13 @@ public class Photos extends Activity{
 				actualImageCursor.moveToPosition(position);
 				final String filename = actualImageCursor.getString(dataColumnIndex);
 				final long imageId = actualImageCursor.getLong(idColumnIndex);
-				//final int imageId = actualImageCursor.getInt(idColumnIndex);
 				Toast.makeText(Photos.this, "" + imageId, Toast.LENGTH_SHORT).show();
-				//final Intent intent = new Intent(Photos.this, New.class);
 				final Intent intent = new Intent();
 				intent.putExtra("filename", filename);
 				intent.putExtra("dataUid", imageId);
 				actualImageCursor.close();
 				setResult(RESULT_OK, intent); //setting result
-				finish(); //finIsh activity after selection
-				//startActivity(intent);
+				//finish(); //finIsh activity after selection
 			}
 		});
 		
