@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -124,5 +125,18 @@ public class Photos extends Activity{
 			}
 			return iView;
 		}
+	}
+	
+	@Override 
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if((keyCode == KeyEvent.KEYCODE_BACK)) {
+			final Intent intent = new Intent();
+			//intent.putExtra("filename", filename);
+			//intent.putExtra("dataUid", imageId);
+			setResult(RESULT_OK, intent); //setting result
+			finish(); //finIsh activity after selection
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }
